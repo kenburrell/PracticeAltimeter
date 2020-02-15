@@ -1,12 +1,16 @@
 /*  Arduino display of Altitude, density Altitude, Press, Temp, and Kollsman setting
- *  from Bosch Sensor BMP280 using ILI9341 touchscreen for Arduino Uno.
+ *  from Bosch Sensor BMP280 using ILI9341 touchscreen shield for Arduino Uno.
  *  SPI via hardware ICSP with Pin #19 for the sensor CSB.
  *  All remaining TFT LCD shield pins used by the 2.8" ILI9341 touch screen.
  *  For clarity, no 10,000 foot indicator used, but could be easily added.
  *  Range of altitude -1000 to 9,999 feet.
- *  Range of Sea Level Pressure 27.50 to 31.50 inches of Hg.
+ *  Range of Ground Level Pressure(QNH) 27.50 to 31.50 inches of Hg.
  *  Any other input of inHg will result in "invalid" message with wait for
  *  correct input.
+ *  To use, enter the most recent QNH in inches of Hg obtained from a nearby
+ *  airport METAR.  QNH is a sea level pressure equivalent, but not exactly
+ *  the same as Sea Level Pressure (SLP), as SLP is adjusted for a 12-hour 
+ *  average temperature, rather than for current conditions.
  *  Made publicly available under the terms of the Creative Commons 
  *  License.
  *  Copyright January 20, 2020.  Ken Burrell.
