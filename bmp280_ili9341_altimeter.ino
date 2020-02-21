@@ -2,8 +2,6 @@
  *  from Bosch Sensor BMP280 using ILI9341 touchscreen shield for Arduino Uno.
  *  SPI via hardware ICSP with Pin #19 for the sensor CSB.
  *  All remaining TFT LCD shield pins used by the 2.8" ILI9341 touch screen.
- *  For clarity, no 10,000 foot indicator used, but could be easily added.
- *  Range of altitude -1000 to 9,999 feet.
  *  Range of Ground Level Pressure(QNH) 27.50 to 31.50 inches of Hg.
  *  Any other input of inHg will result in "invalid" message with wait for
  *  correct input.
@@ -11,8 +9,9 @@
  *  airport METAR.  QNH is a sea level pressure equivalent, but not exactly
  *  the same as Sea Level Pressure (SLP), as SLP is adjusted for a 12-hour 
  *  average temperature, rather than for current conditions.
- *  Made publicly available under the terms of the Creative Commons 
- *  License.
+ *  
+ *  Made publicly available under the terms of the Creative Commons License.
+ *  
  *  Copyright January 20, 2020.  Ken Burrell.
  */
 #include <Arduino.h>
@@ -197,6 +196,19 @@ void drawMarks()
     tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, GREEN);
    
   }
+    for (int i=0; i<50; i++)
+  {
+    h   = i*7.20;
+    phi = radians(h);
+
+    x1= 99.0*sin(phi);
+    y1=-99.0*cos(phi);
+    x2= 94.0*sin(phi);
+    y2=-94.0*cos(phi);
+  
+    tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, GREEN);
+   
+  }
 }
 
 void drawNumbs()
@@ -217,6 +229,24 @@ void drawNumbs()
     tft.setCursor(j,k );
     tft.println(i);
   }
+}
+
+void draw10K(float elev)
+{
+  float x1, y1, x2, y2, h, phi;
+  int Ai;
+
+  Ai = elev / 10000.0;
+  h = Ai * 36.0;
+
+  phi = radians(h);
+
+  x1= 94.0*sin(phi);
+  y1=-94.0*cos(phi);
+  x2=  5.0*sin(phi);
+  y2= -5.0*cos(phi);
+  
+  tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, WHITE);
 }
 
 void drawMin(float elev)
@@ -311,6 +341,7 @@ void loop(void)
      
      if ( B != OldB ) {
         drawDisplay(B);
+        draw10K(H);
         drawMin(H);
         drawHour(H);
      } else if ( H != H0 ) {
@@ -321,6 +352,7 @@ void loop(void)
            tft.drawCircle(clockCenterX, clockCenterY, i, RED);
         }
         drawNumbs();
+        draw10K(H);
         drawMin(H);
         drawHour(H);
      }
