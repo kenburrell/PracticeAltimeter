@@ -249,7 +249,7 @@ void draw10K(float elev)
   tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, WHITE);
 }
 
-void drawMin(float elev)
+void draw100(float elev)
 {
   float x1, y1, x2, y2, x3, y3, x4, y4, h, phi, chi, omg;
 
@@ -275,7 +275,7 @@ void drawMin(float elev)
 
 }
 
-void drawHour(float elev)
+void draw1K(float elev)
 {
   float x1, y1, x2, y2, x3, y3, x4, y4, h, phi, chi, omg;
 
@@ -341,9 +341,6 @@ void loop(void)
      
      if ( B != OldB ) {
         drawDisplay(B);
-        draw10K(H);
-        drawMin(H);
-        drawHour(H);
      } else if ( H != H0 ) {
      // first clear hands of clock and re-draw clock numbers, then hands
         tft.fillCircle(clockCenterX, clockCenterY, 85, BLACK);
@@ -352,11 +349,13 @@ void loop(void)
            tft.drawCircle(clockCenterX, clockCenterY, i, RED);
         }
         drawNumbs();
-        draw10K(H);
-        drawMin(H);
-        drawHour(H);
      }
+     // draw hands
+     draw10K(H);
+     draw1K(H);
+     draw100(H);
 
+     // draw text
      tft.setTextColor(YELLOW,BLACK); tft.setTextSize(1);
      tft.setCursor(40, 280);
      tft.println(H, 0);
