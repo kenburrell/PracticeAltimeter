@@ -234,19 +234,29 @@ void drawNumbs()
 void draw10K(float elev)
 {
   float x1, y1, x2, y2, h, phi;
-  int Ai;
+  float x3, y3, x4, y4, x5, y5, chi, omg;
 
-  Ai = elev / 10000.0;
-  h = Ai * 36.0;
+  h = elev * 0.0036;
 
   phi = radians(h);
+  chi = radians(h-6.0);
+  omg = radians(h+6.0);
 
-  x1= 94.0*sin(phi);
-  y1=-94.0*cos(phi);
-  x2=  5.0*sin(phi);
-  y2= -5.0*cos(phi);
+  x1= 94.0*sin(phi)+clockCenterX;
+  y1=-94.0*cos(phi)+clockCenterY;
+  x2=  5.0*sin(phi)+clockCenterX;
+  y2= -5.0*cos(phi)+clockCenterY;
   
-  tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, WHITE);
+  x3= 96.0*sin(chi)+clockCenterX;
+  y3=-96.0*cos(chi)+clockCenterY;
+  x4= 96.0*sin(omg)+clockCenterX;
+  y4=-96.0*cos(omg)+clockCenterY;
+  x5= 84.0*sin(phi)+clockCenterX;
+  y5=-84.0*cos(phi)+clockCenterY;
+   
+  
+  tft.drawLine(x1, y1, x2, y2, WHITE);
+  tft.fillTriangle(x3, y3, x5, y5, x4, y4, WHITE);
 }
 
 void draw100(float elev)
