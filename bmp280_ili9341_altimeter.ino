@@ -2,6 +2,8 @@
  *  from Bosch Sensor BMP280 using ILI9341 touchscreen shield for Arduino Uno.
  *  SPI via hardware ICSP with Pin #19 for the sensor CSB.
  *  All remaining TFT LCD shield pins used by the 2.8" ILI9341 touch screen.
+ *  For clarity, no 10,000 foot indicator used, but could be easily added.
+ *  Range of altitude -1000 to 9,999 feet.
  *  Range of Ground Level Pressure(QNH) 27.50 to 31.50 inches of Hg.
  *  Any other input of inHg will result in "invalid" message with wait for
  *  correct input.
@@ -9,9 +11,8 @@
  *  airport METAR.  QNH is a sea level pressure equivalent, but not exactly
  *  the same as Sea Level Pressure (SLP), as SLP is adjusted for a 12-hour 
  *  average temperature, rather than for current conditions.
- *  
- *  Made publicly available under the terms of the Creative Commons License.
- *  
+ *  Made publicly available under the terms of the Creative Commons 
+ *  License.
  *  Copyright January 20, 2020.  Ken Burrell.
  */
 #include <Arduino.h>
@@ -83,30 +84,30 @@ Uncomment Serial lines for debugging
 
 void setup() {
 
-//  Serial.begin(9600);
+  //Serial.begin(9600);
   
   tft.reset();
 
 #ifdef USE_ADAFRUIT_SHIELD_PINOUT
-//  Serial.println(F("Using Adafruit 2.8\" TFT Arduino Shield Pinout"));
+  //Serial.println(F("Using Adafruit 2.8\" TFT Arduino Shield Pinout"));
 #else
-//  Serial.println(F("Using Adafruit 2.8\" TFT Breakout Board Pinout"));
+  //Serial.println(F("Using Adafruit 2.8\" TFT Breakout Board Pinout"));
 #endif
-//  Serial.print("TFT size is "); // Serial.print(tft.width()); // Serial.print("x"); // Serial.println(tft.height());
+  //Serial.print("TFT size is "); // Serial.print(tft.width()); // Serial.print("x"); // Serial.println(tft.height());
 
   uint16_t identifier = tft.readID();
   
   if(identifier == 0x9341) {
-//    Serial.println(F("Found ILI9341 LCD driver"));
+    //Serial.println(F("Found ILI9341 LCD driver"));
     } else {
-//    Serial.print(F("Unknown LCD driver chip: "));
-//    Serial.println(identifier, HEX);
-//    Serial.println(F("If using the Adafruit 2.8\" TFT Arduino shield, the line:"));
-//    Serial.println(F("  #define USE_ADAFRUIT_SHIELD_PINOUT"));
-//    Serial.println(F("should appear in the library header (Adafruit_TFT.h)."));
-//    Serial.println(F("If using the breakout board, it should NOT be #defined!"));
-//    Serial.println(F("Also if using the breakout, double-check that all wiring"));
-//    Serial.println(F("matches the tutorial."));
+    //Serial.print(F("Unknown LCD driver chip: "));
+    //Serial.println(identifier, HEX);
+    //Serial.println(F("If using the Adafruit 2.8\" TFT Arduino shield, the line:"));
+    //Serial.println(F("  #define USE_ADAFRUIT_SHIELD_PINOUT"));
+    //Serial.println(F("should appear in the library header (Adafruit_TFT.h)."));
+    //Serial.println(F("If using the breakout board, it should NOT be #defined!"));
+    //Serial.println(F("Also if using the breakout, double-check that all wiring"));
+    //Serial.println(F("matches the tutorial."));
     return;
     }
      
@@ -117,10 +118,10 @@ void setup() {
     tft.setRotation(0);
 
     if (!bmp.begin()) {
-//      Serial.println("BMP init failed!");
+      //Serial.println("BMP init failed!");
       while (1);
     } else {
-//      Serial.println("BMP init success!");
+      //Serial.println("BMP init success!");
     /* Default settings from datasheet. */
       bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
                       Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
@@ -196,7 +197,7 @@ void drawMarks()
     tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, GREEN);
    
   }
-    for (int i=0; i<50; i++)
+  for (int i=0; i<50; i++)
   {
     h   = i*7.20;
     phi = radians(h);
@@ -207,7 +208,6 @@ void drawMarks()
     y2=-94.0*cos(phi);
   
     tft.drawLine(x1+clockCenterX, y1+clockCenterY, x2+clockCenterX, y2+clockCenterY, GREEN);
-   
   }
 }
 
@@ -229,34 +229,6 @@ void drawNumbs()
     tft.setCursor(j,k );
     tft.println(i);
   }
-}
-
-void draw10K(float elev)
-{
-  float x1, y1, x2, y2, h, phi;
-  float x3, y3, x4, y4, x5, y5, chi, omg;
-
-  h = elev * 0.0036;
-
-  phi = radians(h);
-  chi = radians(h-6.0);
-  omg = radians(h+6.0);
-
-  x1= 94.0*sin(phi)+clockCenterX;
-  y1=-94.0*cos(phi)+clockCenterY;
-  x2=  5.0*sin(phi)+clockCenterX;
-  y2= -5.0*cos(phi)+clockCenterY;
-  
-  x3= 96.0*sin(chi)+clockCenterX;
-  y3=-96.0*cos(chi)+clockCenterY;
-  x4= 96.0*sin(omg)+clockCenterX;
-  y4=-96.0*cos(omg)+clockCenterY;
-  x5= 84.0*sin(phi)+clockCenterX;
-  y5=-84.0*cos(phi)+clockCenterY;
-   
-  
-  tft.drawLine(x1, y1, x2, y2, WHITE);
-  tft.fillTriangle(x3, y3, x5, y5, x4, y4, WHITE);
 }
 
 void draw100(float elev)
@@ -310,6 +282,33 @@ void draw1K(float elev)
   tft.drawLine(x4+clockCenterX, y4+clockCenterY, x1+clockCenterX, y1+clockCenterY, RED);
 
 }
+void draw10K(float elev)
+{
+  float x1, y1, x2, y2, h, phi;
+  float x3, y3, x4, y4, x5, y5, chi, omg;
+
+  h = elev * 0.0036;
+
+  phi = radians(h);
+  chi = radians(h-6.0);
+  omg = radians(h+6.0);
+
+  x1= 94.0*sin(phi)+clockCenterX;
+  y1=-94.0*cos(phi)+clockCenterY;
+  x2=  5.0*sin(phi)+clockCenterX;
+  y2= -5.0*cos(phi)+clockCenterY;
+  
+  x3= 96.0*sin(chi)+clockCenterX;
+  y3=-96.0*cos(chi)+clockCenterY;
+  x4= 96.0*sin(omg)+clockCenterX;
+  y4=-96.0*cos(omg)+clockCenterY;
+  x5= 84.0*sin(phi)+clockCenterX;
+  y5=-84.0*cos(phi)+clockCenterY;
+   
+  
+  tft.drawLine(x1, y1, x2, y2, WHITE);
+  tft.fillTriangle(x3, y3, x5, y5, x4, y4, WHITE);
+}
 
 #define BUTTON_X 40
 #define BUTTON_Y 100
@@ -360,12 +359,10 @@ void loop(void)
         }
         drawNumbs();
      }
-     // draw hands
      draw10K(H);
      draw1K(H);
      draw100(H);
 
-     // draw text
      tft.setTextColor(YELLOW,BLACK); tft.setTextSize(1);
      tft.setCursor(40, 280);
      tft.println(H, 0);
